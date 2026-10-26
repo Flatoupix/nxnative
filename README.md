@@ -98,6 +98,9 @@ Under each game: the IPA's size, and "60 fps with 1.2.0" where the game runs at 
 <td align="center" valign="top" width="33%"><img src="docs/images/hades.jpg" width="256" alt="Hades"><br>Hades<br><sub>~4 GB</sub></td>
 </tr>
 <tr>
+<td align="center" valign="top" width="33%"><img src="docs/images/good-job.png" width="256" alt="Good Job!"><br>Good Job!<br><sub>~722 MB Mac app · Mac tested</sub></td>
+</tr>
+<tr>
 <td align="center" valign="top" width="33%"><img src="docs/images/hades-ii.jpg" width="256" alt="Hades II"><br>Hades II<br><sub>~4 GB</sub></td>
 <td align="center" valign="top" width="33%"><img src="docs/images/hollow-knight-silksong.jpg" width="256" alt="Hollow Knight: Silksong"><br>Hollow Knight: Silksong<br><sub>~6.4 GB</sub></td>
 <td align="center" valign="top" width="33%"><img src="docs/images/hyrule-warriors-age-of-calamity.jpg" width="256" alt="Hyrule Warriors: Age of Calamity"><br>Hyrule Warriors: Age of Calamity<br><sub>~15 GB · 60 fps with 1.3.0</sub></td>
@@ -214,6 +217,10 @@ A connected game controller hides the touch controls and keeps every button.
 ## For developers
 
 How it works, the script's options, running games on the Mac and adding a game: [docs/development.md](docs/development.md). Per-game notes: [dm/games](dm/games/README.md#games). In-depth bring-up and debugging notes: [docs/agents](docs/agents/README.md).
+
+### A concrete native-port case study
+
+[Good Job!](dm/games/0100B0500FE4E000/README.md) is the reference Mac bring-up for a Unity 2018.4/NVN title. Its profile demonstrates that a Switch game can be shipped as a self-contained Apple-silicon `.app`: the original ARM64 modules stay intact apart from build-gated frame-pacing cuts, the host translates NVN to Metal, all 8,701 shaders compile, and the first playable level runs at a verified 60 fps. The note records the exact memory settings, shader tables, dynamic 30/60-fps fix, build command and remaining validation scope. It is a useful template for evaluating another game without implying that every title will require the same patches.
 
 ## License
 

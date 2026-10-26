@@ -33,6 +33,7 @@ int front_screen_max_fps(void) { return g_screen_fps; }
 // screen's rate, because the switch changes the whole screen for every app and most external screens go black for a second or more. A screen with no such mode keeps the virtual ticks
 static NSWindow *g_win; static _Atomic int g_match_want;   // the game's window; the frame rate to match (0 = not known yet), written by the present thread only
 static CGDirectDisplayID g_match_id; static CGDisplayModeRef g_match_orig;   // main thread: the screen this host switched and its own mode (NULL = none switched)
+static int front_window_value(const char *name, int fallback, int low, int high) { const char *e = getenv(name); if (!e || !*e) return fallback; char *end; long v = strtol(e, &end, 10); return end == e || *end || v < low || v > high ? fallback : (int)v; }
 static double mode_hz(CGDisplayModeRef m) { double hz = CGDisplayModeGetRefreshRate(m); return hz > 0 ? hz : 0; }   // 0 = not known (older built-in screens report none)
 static int hz_multiple(double hz, int fps) { double k = round(hz / fps); return k >= 1 && fabs(hz / fps - k) < 0.01; }   // 59.94 Hz counts as 60
 static CGError screen_set_mode(CGDirectDisplayID id, CGDisplayModeRef m) {   // for this app only (kCGConfigureForAppOnly)
@@ -229,7 +230,10 @@ void front_run(void (*guest)(void)) {
     @autoreleasepool {
         [NSApplication sharedApplication];
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-        NSRect r = NSMakeRect(0, 0, 1280, 720);
+        int window_w = front_window_value("DM_WINDOW_WIDTH", 1280, 640, 7680);
+        int window_h = front_window_value("DM_WINDOW_HEIGHT", 720, 360, 4320);
+        NSRect r = NSMakeRect(0, 0, window_w, window_h);
+        LOG("front end: initial window %dx%d", window_w, window_h);
         NSWindow *win = [[NSWindow alloc] initWithContentRect:r
                                                     styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable
                                                       backing:NSBackingStoreBuffered defer:NO];

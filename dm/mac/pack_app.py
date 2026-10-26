@@ -76,7 +76,10 @@ def min_os(host):   # the host's deployment target (LC_BUILD_VERSION minos): the
 
 
 def build_launcher(out, minos):
-    run(['xcrun', 'clang', '-arch', 'arm64', f'-mmacosx-version-min={minos}', '-O2', '-Wall', '-o', out, HERE / 'launcher.c', '-framework', 'CoreFoundation'])
+    # launcher.c contains the small AppKit settings window as well as the
+    # CoreFoundation bundle/bootstrap code. Compile it as Objective-C so the
+    # Mac app has the same pre-game settings affordance as the iOS launcher.
+    run(['xcrun', 'clang', '-x', 'objective-c', '-arch', 'arm64', f'-mmacosx-version-min={minos}', '-O2', '-Wall', '-o', out, HERE / 'launcher.c', '-framework', 'AppKit', '-framework', 'CoreFoundation'])
 
 
 def make_icns(jpg, out):   # the game's icon (256x256 JPEG) at every size an .icns holds
